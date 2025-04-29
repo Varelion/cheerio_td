@@ -1,0 +1,37 @@
+{
+	"name": "cheerio_td",
+	"version": "1.0.0",
+	"description": "Following a simple tutorial for the Cheerio webscraping library.",
+	"keywords": [
+		"cheerio",
+		"test"
+	],
+	"homepage": "https://github.com/Varelion/cheerio_td#readme",
+	"bugs": {
+		"url": "https://github.com/Varelion/cheerio_td/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Varelion/cheerio_td.git"
+	},
+	"license": "MIT",
+	"author": "Varelion",
+	"type": "commonjs",
+	"main": "index.js",
+	"scripts": {
+		"test": "node .",
+		"dev": "nodemon ."
+	},
+	"dependencies": {
+		"axios": "^1.9.0",
+		"cheerio": "^1.0.0",
+		"nodemon": "^3.1.10",
+		"pretty": "^2.0.0"
+	},
+	"devDependencies": {
+		"eslint": "^8.57.1",
+		"eslint-config-airbnb": "^19.0.4",
+		"eslint-config-prettier": "^10.1.2",
+		"prettier": "^3.5.3"
+	}
+}
