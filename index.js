@@ -1,8 +1,5 @@
 const cheerio = require('cheerio');
-const axios = require('axios');
-const pretty = require('pretty');
 const Page = require('./components/Page.js');
-const { regional } = require('./components/regionalInfo.js');
 const { ipList } = require('./components/mockIps.js');
 const { log } = require('console');
 const { makeFile } = require('./components/WriteFile.js');
@@ -68,21 +65,7 @@ async function testParse() {
 }
 
 async function main() {
-	// let { newPageCheerio, newPageClass } = wikiPage();
-	// testParse();
-	// const ip = '181.165.119.254';
-	// const url = regional.lacnic.url + ip;
-	// const headers = regional.lacnic.headers;
-	// console.log(url);
-	// const lanicPage = new Page(url);
-	// // const cheers = await lanicPage.cheerioGet(headers);
-	// const getter = await lanicPage.axiosGetWithTimeout();
-	// console.log('getter instanceof JSON');
-	// console.log(getter);
-	// const dot = cheerio.load(String.toString(getter));
-	// console.log(dot('p:first').text());
 	let start = performance.now();
-	console.log(start);
 	let elapse;
 	i = 0;
 	for (const ip of ipList) {
@@ -90,15 +73,14 @@ async function main() {
 		if (i > 3) {
 			break;
 		}
-		const lookup = new Page(regional.lacnic.url + ip);
-		await lookup.axiosGetWithTimeout();
 		const sleep = (ms) =>
 			new Promise((resolve) => {
 				setTimeout(resolve, ms);
 			});
 		await sleep(500);
+
 		await makeFile(ip.replaceAll('.', '-'), {
-			contentString: lookup['axiosResponse'],
+			contentString: 'Mockdata',
 			ip: ip
 		});
 	}
