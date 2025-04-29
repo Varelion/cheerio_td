@@ -11,9 +11,9 @@ const makeFile = async (fileName, { contentString, ip }) => {
 		String(now.getDate()).padStart(2, '0') +
 		'_' +
 		String(now.getHours()).padStart(2, '0') +
-		':' +
+		'-' + 
 		String(now.getMinutes()).padStart(2, '0') +
-		':' +
+		'-' + 
 		String(now.getSeconds()).padStart(2, '0');
 
 	contentString = `DATE: ${dateString}\nFor ip: ${ip}\n${contentString}`;
@@ -26,17 +26,27 @@ const makeFile = async (fileName, { contentString, ip }) => {
 	);
 
 	try {
-		await fs.writeFile(filepath, contentString, 'utf16le', (err) => {
-			if (err) {
-				throw new Error(`Error writing: ${err.message}`);
-			}
+		// Make sure the directory exists first
+		const outputDir = path.join(__dirname, '..', 'output');
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+
+		// Write the file using a properly wrapped promise
+		await new Promise((resolve, reject) => {
+			fs.writeFile(filepath, contentString, 'utf16le', (err) => {
+				if (err) {
+					reject(new Error(`Error writing: ${err.message}`));
+				} else {
+					console.log(`File successfully written to: ${filepath}`);
+					resolve('Success');
+				}
+			});
 		});
-		return 'Success';
 	} catch (error) {
 		console.error('\nError:\n', error.message, '\n');
 	} finally {
 		// Code that will run regardless of try/catch result
-		// Remember, don't have a return in finally.
 		console.log('Final completed.');
 	}
 };
