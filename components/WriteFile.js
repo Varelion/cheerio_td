@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+const fs = require('node:fs/promises');
 const path = require('path');
 
 const makeFile = async (fileName, { contentString, ip }) => {
@@ -11,9 +11,9 @@ const makeFile = async (fileName, { contentString, ip }) => {
 		String(now.getDate()).padStart(2, '0') +
 		'_' +
 		String(now.getHours()).padStart(2, '0') +
-		'-' + 
+		'-' +
 		String(now.getMinutes()).padStart(2, '0') +
-		'-' + 
+		'-' +
 		String(now.getSeconds()).padStart(2, '0');
 
 	contentString = `DATE: ${dateString}\nFor ip: ${ip}\n${contentString}`;
@@ -28,21 +28,20 @@ const makeFile = async (fileName, { contentString, ip }) => {
 	try {
 		// Make sure the directory exists first
 		const outputDir = path.join(__dirname, '..', 'output');
-		if (!fs.existsSync(outputDir)) {
-			fs.mkdirSync(outputDir, { recursive: true });
+
+		// Using fs.mkdir with recursive option and catching errors if directory already exists
+		try {
+			await fs.mkdir(outputDir, { recursive: true });
+		} catch (err) {
+			// Ignore error if directory already exists
+			if (err.code !== 'EEXIST') throw err;
 		}
 
-		// Write the file using a properly wrapped promise
-		await new Promise((resolve, reject) => {
-			fs.writeFile(filepath, contentString, 'utf16le', (err) => {
-				if (err) {
-					reject(new Error(`Error writing: ${err.message}`));
-				} else {
-					console.log(`File successfully written to: ${filepath}`);
-					resolve('Success');
-				}
-			});
-		});
+		// Write the file using fs/promises
+		await fs.writeFile(filepath, contentString, 'utf16le');
+		console.log(`File successfully written to: ${filepath}`);
+
+		return 'Success';
 	} catch (error) {
 		console.error('\nError:\n', error.message, '\n');
 	} finally {
